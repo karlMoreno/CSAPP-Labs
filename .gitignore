@@ -1,2 +1,4 @@
 shell.nix
 datalab-handout.tar
+.idx
+dev.nix
