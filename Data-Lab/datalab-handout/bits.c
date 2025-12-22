@@ -297,41 +297,40 @@ int logicalNeg(int x) {
 int howManyBits(int x) {
   int sign_bit_mask;
   int normalized_value;
-  int bit_count;
 
-  int upper_16_bits_present;
-  int upper_8_bits_present;
-  int upper_4_bits_present;
-  int upper_2_bits_present;
-  int upper_1_bits_present;
+  int bit_index_count;
+  int shift_amount;
 
   sign_bit_mask = x >> 31;
   normalized_value = x ^ sign_bit_mask;
 
-  bit_count = 1;
+  bit_index_count = 0;
 
-  upper_16_bits_present = (!!(normalized_value >> 16)) << 4;
-  normalized_value = normalized_value >> upper_16_bits_present;
-  bit_count = bit_count + upper_16_bits_present;
+  shift_amount = (!!(normalized_value >> 16)) << 4;
+  bit_index_count = bit_index_count + shift_amount;
+  normalized_value = normalized_value >> shift_amount;
 
-  upper_8_bits_present = (!!(normalized_value >> 8)) << 3;
-  normalized_value = normalized_value >> upper_8_bits_present;
-  bit_count = bit_count + upper_8_bits_present;
+  shift_amount = (!!(normalized_value >> 8)) << 3;
+  bit_index_count = bit_index_count + shift_amount;
+  normalized_value = normalized_value >> shift_amount;
 
-  upper_4_bits_present = (!!(normalized_value >> 4)) << 2;
-  normalized_value = normalized_value >> upper_4_bits_present;
-  bit_count = bit_count + upper_4_bits_present;
+  shift_amount = (!!(normalized_value >> 4)) << 2;
+  bit_index_count = bit_index_count + shift_amount;
+  normalized_value = normalized_value >> shift_amount;
 
-  upper_2_bits_present = (!!(normalized_value >> 2)) << 1;
-  normalized_value = normalized_value >> upper_2_bits_present;
-  bit_count = bit_count + upper_2_bits_present;
+  shift_amount = (!!(normalized_value >> 2)) << 1;
+  bit_index_count = bit_index_count + shift_amount;
+  normalized_value = normalized_value >> shift_amount;
 
-  upper_1_bits_present = !!(normalized_value >> 1);
-  bit_count = bit_count + upper_1_bits_present;
+  shift_amount = !!(normalized_value >> 1);
+  bit_index_count = bit_index_count + shift_amount;
+  normalized_value = normalized_value >> shift_amount;
 
-  bit_count = bit_count + normalized_value;
+  /* normalized_value is now 0 or 1 */
+  bit_index_count = bit_index_count + normalized_value;
 
-  return bit_count;
+  /* +1 for the sign bit */
+  return bit_index_count + 1;
 }
 //float
 /* 
