@@ -202,7 +202,10 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  int invert = ~x;
+  int negate = inverted_bits + 1;
+
+  return negate;
 }
 //3
 /* 
