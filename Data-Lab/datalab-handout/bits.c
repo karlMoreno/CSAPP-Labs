@@ -295,7 +295,31 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int sign = x >> 31;
+  int normalized = x ^ sign;
+
+  int bit_count = 1;
+
+  int upper_16 = !!(normalized >> 16) << 4;
+  normalized >>= upper_16;
+  bit_count += upper_16;
+
+  int upper_8 = !!(normalized >> 8) << 3;
+  normalized >>= upper_8;
+  bit_count += upper_8;
+
+  int upper_4 = !!(normalized >> 4) << 2;
+  normalized >>= upper_4;
+  bit_count += upper_4;
+
+  int upper_2 = !!(normalized >> 2) << 1;
+  normalized >>= upper_2;
+  bit_count += upper_2;
+
+  int upper_1 = !!(normalized >> 1);
+  bit_count += upper_1;
+
+  return bit_count;
 }
 //float
 /* 
