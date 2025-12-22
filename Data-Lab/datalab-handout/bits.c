@@ -259,7 +259,7 @@ int isLessOrEqual(int x, int y) {
   int diff_sign = y_minus_x >> 31;      /* sign of (y - x) */
 
   /* Case 1: signs different and x is negative */
-  int x_negative_and_diff_sign = signDiff & sign_x;
+  int x_negative_and_diff_sign = signDiff & signX;
 
   /* Case 2: same sign and (y - x) >= 0 */
   int same_sign_and_non_negative_diff = ~signDiff & ~diff_sign;
