@@ -203,7 +203,7 @@ int allOddBits(int x) {
  */
 int negate(int x) {
   int invert = ~x;
-  int negate = inverted_bits + 1;
+  int negate = invert + 1;
 
   return negate;
 }
