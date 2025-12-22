@@ -237,7 +237,7 @@ int isAsciiDigit(int x) {
 int conditional(int x, int y, int z) {
   int notZero = !!x;
   int selectMask = ~notZero + 1;
-  
+
   int selectY = selectMask & y;
   int selectZ = ~selectMask & z;
 
@@ -251,7 +251,20 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int signX = x >> 31;                 /* 0 if x >= 0, -1 if x < 0 */
+  int signY = y >> 31;                 /* 0 if y >= 0, -1 if y < 0 */
+  int signDiff = signX ^ signY;
+
+  int y_minus_x = y + (~x + 1);         /* y - x */
+  int diff_sign = y_minus_x >> 31;      /* sign of (y - x) */
+
+  /* Case 1: signs different and x is negative */
+  int x_negative_and_diff_sign = signDiff & sign_x;
+
+  /* Case 2: same sign and (y - x) >= 0 */
+  int same_sign_and_non_negative_diff = ~signDiff & ~diff_sign;
+
+  return !!(x_negative_and_diff_sign | same_sign_and_non_negative_diff);
 }
 //4
 /* 
