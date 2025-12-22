@@ -175,7 +175,7 @@ int isTmax(int x) {
   int isTmax = !(xPlusOne ^ ~x);
 
   int notNegative = !!xPlusOne;
-  
+
   return isTmax & notNegative;
 
 }
@@ -188,7 +188,11 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int oddMask = 0xAA;
+  oddMask = oddMask | (oddMask << 8);
+  oddMask = oddMask | (oddMask << 16);
+
+  return !((x & oddMask) ^ oddMask);
 }
 /* 
  * negate - return -x 
