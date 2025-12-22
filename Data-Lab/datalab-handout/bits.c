@@ -345,7 +345,32 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign_bit = uf & 0x80000000u;
+  unsigned exponent_field = uf & 0x7F800000u;
+  unsigned fraction_field = uf & 0x007FFFFFu;
+
+  if (exponent_field == 0x7F800000u) {
+    return uf;
+  }
+
+  if (exponent_field == 0u) {
+    fraction_field = fraction_field << 1;
+
+    if (fraction_field & 0x00800000u) {
+      exponent_field = 0x00800000u;
+      fraction_field = fraction_field & 0x007FFFFFu;
+    }
+
+    return sign_bit | exponent_field | fraction_field;
+  }
+
+  exponent_field = exponent_field + 0x00800000u;
+
+  if (exponent_field == 0x7F800000u) {
+    return sign_bit | 0x7F800000u;
+  }
+
+  return sign_bit | exponent_field | fraction_field;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
