@@ -295,32 +295,41 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  int sign = x >> 31;
-  int normalized = x ^ sign;
+  int sign_bit_mask;
+  int normalized_value;
+  int bit_count;
 
-  int bit_count = 1;
+  int upper_16_bits_present;
+  int upper_8_bits_present;
+  int upper_4_bits_present;
+  int upper_2_bits_present;
+  int upper_1_bits_present;
 
-  int upper_16 = !!(normalized >> 16) << 4;
-  normalized >>= upper_16;
-  bit_count += upper_16;
+  sign_bit_mask = x >> 31;
+  normalized_value = x ^ sign_bit_mask;
 
-  int upper_8 = !!(normalized >> 8) << 3;
+  bit_count = 1;
 
-  normalized >>= upper_8;
-  bit_count += upper_8;
+  upper_16_bits_present = (!!(normalized_value >> 16)) << 4;
+  normalized_value = normalized_value >> upper_16_bits_present;
+  bit_count = bit_count + upper_16_bits_present;
 
-  int upper_4 = !!(normalized >> 4) << 2;
+  upper_8_bits_present = (!!(normalized_value >> 8)) << 3;
+  normalized_value = normalized_value >> upper_8_bits_present;
+  bit_count = bit_count + upper_8_bits_present;
 
-  normalized >>= upper_4;
-  bit_count += upper_4;
+  upper_4_bits_present = (!!(normalized_value >> 4)) << 2;
+  normalized_value = normalized_value >> upper_4_bits_present;
+  bit_count = bit_count + upper_4_bits_present;
 
-  int upper_2 = !!(normalized >> 2) << 1;
-  
-  normalized >>= upper_2;
-  bit_count += upper_2;
+  upper_2_bits_present = (!!(normalized_value >> 2)) << 1;
+  normalized_value = normalized_value >> upper_2_bits_present;
+  bit_count = bit_count + upper_2_bits_present;
 
-  int upper_1 = !!(normalized >> 1);
-  bit_count += upper_1;
+  upper_1_bits_present = !!(normalized_value >> 1);
+  bit_count = bit_count + upper_1_bits_present;
+
+  bit_count = bit_count + normalized_value;
 
   return bit_count;
 }
