@@ -459,5 +459,35 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  int minimum_denormal_exponent;
+  int minimum_normal_exponent;
+  int maximum_normal_exponent;
+
+  minimum_denormal_exponent = -149;
+  minimum_normal_exponent = -126;
+  maximum_normal_exponent = 127;
+
+  /* Too small for even denorm */
+  if (x < minimum_denormal_exponent) {
+    return 0u;
+  }
+
+  /* Too large, return +INF */
+  if (x > maximum_normal_exponent) {
+    return 0x7F800000u;
+  }
+
+  /* Denormalized result */
+  if (x < minimum_normal_exponent) {
+    int fraction_shift_amount;
+    unsigned fraction_field;
+
+    fraction_shift_amount = x - minimum_denormal_exponent; /* x + 149 */
+    fraction_field = 1u << fraction_shift_amount;
+
+    return fraction_field;
+  }
+
+  /* Normalized result: exponent = x + 127, fraction = 0 */
+  return (unsigned)(x + 127) << 23;
 }
