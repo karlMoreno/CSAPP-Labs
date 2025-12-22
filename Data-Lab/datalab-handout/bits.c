@@ -305,14 +305,17 @@ int howManyBits(int x) {
   bit_count += upper_16;
 
   int upper_8 = !!(normalized >> 8) << 3;
+
   normalized >>= upper_8;
   bit_count += upper_8;
 
   int upper_4 = !!(normalized >> 4) << 2;
+
   normalized >>= upper_4;
   bit_count += upper_4;
 
   int upper_2 = !!(normalized >> 2) << 1;
+  
   normalized >>= upper_2;
   bit_count += upper_2;
 
