@@ -385,7 +385,65 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned sign_bit = uf >> 31;
+  unsigned exponent_bits = (uf >> 23) & 0xFFu;
+  unsigned fraction_bits = uf & 0x007FFFFFu;
+
+  int unbiased_exponent;
+  unsigned mantissa_with_hidden_one;
+  unsigned integer_magnitude;
+  unsigned overflow_sentinel;
+
+  overflow_sentinel = 0x80000000u;
+
+  /* NaN or INF */
+  if (exponent_bits == 0xFFu) {
+    return (int)overflow_sentinel;
+  }
+
+  /* Denormals and zeros are always |f| < 1 */
+  if (exponent_bits == 0u) {
+    return 0;
+  }
+
+  unbiased_exponent = (int)exponent_bits - 127;
+
+  /* If exponent is negative, magnitude < 1, truncates to 0 */
+  if (unbiased_exponent < 0) {
+    return 0;
+  }
+
+  /* If exponent is too large, it won't fit in signed 32-bit int */
+  if (unbiased_exponent > 30) {
+    return (int)overflow_sentinel;
+  }
+
+  /* Build mantissa: 1.fraction */
+  mantissa_with_hidden_one = fraction_bits | 0x00800000u;
+
+  /* Shift mantissa to form integer magnitude */
+  if (unbiased_exponent >= 23) {
+    integer_magnitude = mantissa_with_hidden_one << (unbiased_exponent - 23);
+  } else {
+    integer_magnitude = mantissa_with_hidden_one >> (23 - unbiased_exponent);
+  }
+
+  /* Apply sign */
+  if (sign_bit) {
+    /* If magnitude is 0x80000000 exactly, it's representable as INT_MIN.
+       Otherwise, negate normally using two's complement. */
+    if (integer_magnitude > 0x80000000u) {
+      return (int)overflow_sentinel;
+    }
+    return -(int)integer_magnitude;
+  }
+
+  /* Positive overflow check (shouldn't happen given unbiased_exponent <= 30) */
+  if (integer_magnitude > 0x7FFFFFFFu) {
+    return (int)overflow_sentinel;
+  }
+
+  return (int)integer_magnitude;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
