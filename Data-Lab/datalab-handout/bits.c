@@ -146,7 +146,7 @@ int bitXor(int x, int y) {
   int bitOr = ~(~x & ~y);
   int bitAnd = x & y;
 
-  int result = bitwise_or & ~bitwise_and;
+  int result = bitOr & ~bitAnd;
 
   return result;
 }
